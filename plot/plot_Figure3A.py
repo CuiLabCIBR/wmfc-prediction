@@ -327,7 +327,7 @@ for i, df in enumerate(dfs):
                     flierprops=dict(marker='o', markerfacecolor='none',
                                     markeredgecolor=border_colors[j], markersize=4, linestyle='none'))
 
-       =
+
         stars = stars_map.get(ds_name, {}).get(cond, "")
         if stars:
             local_max = float(np.nanmax(vals))

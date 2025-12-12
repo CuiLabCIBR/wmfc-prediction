@@ -187,7 +187,7 @@ title(['G-G network-level Haufe weights of ' current_set]);
 box off;
 axis square;
 
-%*：raw p < 0.05
+%*: raw p < 0.05
 hold on;
 for i = 1:nNet
     for j = 1:nNet

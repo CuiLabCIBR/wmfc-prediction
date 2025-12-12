@@ -158,16 +158,16 @@ if nargin >= 7 && ~isempty(saveName)
   
     saveas(gcf, [saveName '.fig']);
 
-    % 300 dpi PNG（位图）
+    % 300 dpi PNG (bitmap)
     print(gcf, [saveName '.png'], '-dpng',  '-r300');
 
-    % 300 dpi TIF（位图）
+    % 300 dpi TIF (bitmap)
     print(gcf, [saveName '.tif'], '-dtiff', '-r300');
 
-    % PDF（矢量，适合 Adobe）
+    % PDF (vector, suitable for Adobe)
     print(gcf, [saveName '.pdf'], '-dpdf', '-bestfit');
 
-    % EPS（矢量，适合 Adobe Illustrator）
+    % EPS (vector, suitable for Adobe Illustrator)
     print(gcf, [saveName '.eps'], '-depsc', '-painters');
 end
 end

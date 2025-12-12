@@ -36,7 +36,7 @@ load JHU68_info_rename.mat;   % tractsName: 5 WM
 GM_net_names = networkName;  
 WM_net_names = tractsName;   
 
-%% ---------- 4. plot（pfactor–ADHD） ----------
+%% ---------- 4. plot(pfactor–ADHD) ----------
 % ---- 4.1 W-W: 5×5 ----
 saveName_WW = [fig_dir '/ABCDpfactor_ADHD_NetBlock_WW_weight'];
 plot_block_matrix(S_WW.Net_real_WW, S_WW.p_WW, ...

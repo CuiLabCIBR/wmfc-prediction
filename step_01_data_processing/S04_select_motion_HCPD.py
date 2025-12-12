@@ -55,8 +55,8 @@ def _find_confounds_for_sub(
     max_runs: int,
 ) -> Dict[int, Path]:
     """
-    按命名规则为该被试找到最多 max_runs 个 *_motion.tsv，
-    并映射到固定槽位（1..4）：
+    Find up to max_runs *_motion.tsv files for the subject according to the naming convention,
+    and map them to fixed slots (1..4):
       1→REST1_AP, 2→REST1_PA, 3→REST2_AP, 4→REST2_PA
     """
     as_is, with_sub = _normalize_subid(subid)
@@ -127,7 +127,7 @@ def _find_confounds_for_sub(
 
 def _compute_fd_metrics(tsv_path: Path) -> Tuple[Optional[float], Optional[float], int]:
     """
-    从 *_motion.tsv 读取 framewise_displacement 列，返回：
+    Read the framewise_displacement column from *_motion.tsv and return:
     (mean_fd, prop_leq_0p2, n_frames_used)
     """
     try:
@@ -167,7 +167,7 @@ def summarize_subject(
             if m is not None and p is not None and n > 0:
                 mean_fd = m
                 prop_leq = p
-                # 你原来的保留标准
+                # Your original retention criteria
                 if (m <= 0.5) and (p >= 0.40):
                     keep = 1
         result[f"rest{r}_meanFD"] = mean_fd

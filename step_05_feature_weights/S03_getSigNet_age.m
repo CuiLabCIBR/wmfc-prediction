@@ -159,7 +159,7 @@ p_tmp = nan(size(p_WW));
 p_tmp(valid_idx) = mafdr(p_WW(valid_idx), 'BHFDR', true);
 pFDR_WW = reshape(p_tmp, size(p_WW));
 
-%% ---------- Part 2: G-W permutation（100×68 → 7×5） ----------
+%% ---------- Part 2: G-W permutation(100×68 → 7×5) ----------
 fprintf('Permutation for G-W blocks...\n');
 
 Net_perm_GW = nan(7, 5, nPerm);

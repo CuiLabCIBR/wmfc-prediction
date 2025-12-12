@@ -32,7 +32,7 @@ if numel(gm_labels) ~= m_gm
     error('gm_labels length(%d) != 100', numel(gm_labels));
 end
 if numel(wm_labels) ~= n_wm
-    error('wm_labels length度(%d) != 68', numel(wm_labels));
+    error('wm_labels length(%d) != 68', numel(wm_labels));
 end
 
 nGM = 7;
@@ -188,7 +188,7 @@ title(['G-W network-level Haufe weights of ' current_set]);
 box off;
 axis tight; axis ij;
 
-% *：raw p < 0.05
+% *: raw p < 0.05
 hold on;
 for gi = 1:nGM
     for wi = 1:nWM

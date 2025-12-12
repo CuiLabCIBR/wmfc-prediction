@@ -144,7 +144,7 @@ for i_str = 1:length(targetStr_total)
 end
    
 
-%% FDR（Benjamini–Hochberg） across all datasets × targets（4×5=20）
+%% FDR (Benjamini–Hochberg) across all datasets × targets (4×5=20)
 p_mat = nan(length(targetStr_total), 5);
 for i_str = 1:length(targetStr_total)
     p_mat(i_str, :) = [ ...

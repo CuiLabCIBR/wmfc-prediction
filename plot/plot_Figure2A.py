@@ -90,7 +90,7 @@ for i in range(1, data.shape[0]):  # row 2..5
         cond = cond_map[raw]
         by_ds[ds][cond] = cell_to_num1d(data[i, j])
 
-# DataFrame 表
+# DataFrame table
 dfs = []
 for ds in dataset_order:
     cols = {}

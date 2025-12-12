@@ -43,7 +43,7 @@ save([save_name '.mat'], 'FCmatrix', 'FCmatrix_full');
 load cmap0.mat;
 load Schaefer100_info.mat;
 FCmatrix_rearranged = FCmatrix_full(regionID_sortedByNetwork, regionID_sortedByNetwork);
-% 把矩阵的上三角置0
+% Set the upper triangle of the matrix to 0
 % FCmatrix_rearranged(triu(true(size(FCmatrix_rearranged)))) = 0;
 figure('Position', [100, 100, 550, 500]);
 imagesc(FCmatrix_rearranged); 

@@ -32,7 +32,6 @@ The system requirements and installation guide for each software can be found on
 
 ## Data
 
-* **`Data/demography/`**: Subject-level demographic, behavioral, and covariate tables used in the prediction analyses.
 * **`Data/Prediction/`**: Summary prediction results used for reporting and visualization.
 * **`Data/Atlas/`**: Parcellation images used to define the GM and WM regions.
 

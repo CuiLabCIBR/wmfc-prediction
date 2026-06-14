@@ -25,7 +25,7 @@ The system requirements and installation guide for each software can be found on
 
 ### Postprocessing
 * **Connectome Workbench v1.5.0** ([https://www.humanconnectome.org/software/connectome-workbench](https://www.humanconnectome.org/software/connectome-workbench))
-* **Python 3.9.18** ([https://www.python.org/](https://www.python.org/))
+* **Python 3.10.11** ([https://www.python.org/](https://www.python.org/))
 * **R v4.5.1** ([https://www.r-project.org](https://www.r-project.org))
 * **MATLAB R2019a** ([https://www.mathworks.com/](https://www.mathworks.com/))
 * **OS:** Linux

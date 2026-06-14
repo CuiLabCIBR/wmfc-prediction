@@ -85,7 +85,7 @@ end
 for i_str = 1:length(targetStr_total)
     thisTarget = targetStr_total{i_str};
     %% partial GW | GG
-    MedianPartialCorr_GW = median(dataCell{i_str+1, 4}); 
+    MedianPartialCorr_GW = median(dataCell{i_str+1, 4}, 'omitnan');
     PermPartialCorr_GW = perm_partialR_gw_totalStr{i_str, 2}; 
 
     nan_idx = find(~isfinite(PermPartialCorr_GW));
@@ -108,7 +108,7 @@ for i_str = 1:length(targetStr_total)
     perm_partialP_GW_totalStr(i_str,1) = perm_partialP_GW;
 
    %% partial WW | GG
-    MedianPartialCorr_WW = median(dataCell{i_str+1, 6});
+    MedianPartialCorr_WW = median(dataCell{i_str+1, 6}, 'omitnan');
     PermPartialCorr_WW = perm_partialR_ww_totalStr{i_str, 2}; %% 1 is target string, 3 is MAE
     
     nan_idx = find(~isfinite(PermPartialCorr_WW));
@@ -197,5 +197,3 @@ save([resultsFolder '/Pvalue_all.mat'], ...
 disp('Saved:');
 disp([resultsFolder '/Pvalue_byPermutation.mat']);
 disp([resultsFolder '/Pvalue_all.mat']);
-
-

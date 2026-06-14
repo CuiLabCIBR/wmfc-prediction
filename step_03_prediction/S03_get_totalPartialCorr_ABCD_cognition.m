@@ -1,5 +1,6 @@
 %%
 clear;
+addpath(fileparts(mfilename('fullpath')));
 % targetStr_total = {'nihtbx_picvocab','nihtbx_picture_uncorrected','nihtbx_flanker','nihtbx_list', 'nihtbx_cardsort','nihtbx_pattern','nihtbx_reading'};
 
 targetStr_total = {'nihtbx_totalcomp'; 'nihtbx_fluidcomp'; 'nihtbx_cryst'};
@@ -118,11 +119,22 @@ for i_str = 1:num_targets
     [~, ind_ww] = sort(Corr_Overall_Actual_WW, 'descend', 'MissingPlacement', 'last'); % Sort IDs by correlation
     median_id_ww = ind_ww(51)-1 % python starts with 0!!!
     
-    %% --- Calculate Partial Correlations ---
-    disp('  Calculating partial correlations...');
+    %% --- Calculate Fold-wise Partial Correlations ---
+    disp('  Calculating partial correlations within each fold...');
     partialR_gw_total = nan(1, num_cv_runs);
     partialR_ww_total = nan(1, num_cv_runs);
 
+    for i_cv = 1:num_cv_runs
+        if any(isnan([Corr_Overall_Actual_GG(i_cv), Corr_Overall_Actual_GW(i_cv), Corr_Overall_Actual_WW(i_cv)]))
+            warning('Skipping partial correlation for repetition %d because an overall result is missing.', i_cv - 1);
+            continue;
+        end
+
+        [partialR_gw_total(i_cv), partialR_ww_total(i_cv)] = ...
+            calculate_fold_mean_partial_corr(BaseFolder, i_cv - 1, num_folds);
+    end
+
+    %{
     for i_cv = 1:num_cv_runs
         % Get the *original* run index (0 to 100) for the i_cv-th best run
         % Handle potential NaN values in correlations if files were missing
@@ -233,6 +245,7 @@ for i_str = 1:num_targets
              warning('Error calculating partial correlation for rank %d (IDs: %d, %d, %d): %s. Skipping.', i_cv, id_gg_current-1, id_gw_current-1, id_ww_current-1, ME.message);
         end
     end % End loop over i_cv ranks
+    %}
 
     % Store median partial correlations and the full distribution
     medianResults_totalStr{i_str, 5} = median(partialR_gw_total, 'omitnan');

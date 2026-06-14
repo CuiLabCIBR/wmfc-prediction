@@ -1,5 +1,6 @@
 %%
 clear;
+addpath(fullfile(fileparts(mfilename('fullpath')), '..', 'step_03_prediction'));
 ProjectFolder = '/ibmgpfs/cuizaixu_lab/congjing/WM_prediction';
 targetStr_total = {'nihtbx_totalcomp'; 'nihtbx_fluidcomp'; 'nihtbx_cryst'};
 targetDir = [ProjectFolder '/ABCD/code/5th_prediction/PLS_prediction/networkFC/cognition_nosmooth_motion2runFD'];
@@ -87,11 +88,22 @@ for i_str = 1:num_targets
     permR_ww_totalStr{i_str, 2} = Corr_Overall_Perm_WW;
     permR_ww_totalStr{i_str, 3} = MAE_Overall_Perm_WW;
     
-   %% --- Calculate Partial Correlations ---
-    disp('  Calculating partial correlations...');
+   %% --- Calculate Fold-wise Partial Correlations ---
+    disp('  Calculating partial correlations within each fold...');
     perm_partialR_gw_total = nan(1, num_cv_runs);
     perm_partialR_ww_total = nan(1, num_cv_runs);
 
+    for i_cv = 1:num_cv_runs
+        if any(isnan([Corr_Overall_Perm_GG(i_cv), Corr_Overall_Perm_GW(i_cv), Corr_Overall_Perm_WW(i_cv)]))
+            warning('Skipping partial correlation for permutation %d because an overall result is missing.', i_cv - 1);
+            continue;
+        end
+
+        [perm_partialR_gw_total(i_cv), perm_partialR_ww_total(i_cv)] = ...
+            calculate_fold_mean_partial_corr(BaseFolder, i_cv - 1, num_folds);
+    end
+
+    %{
     for i_cv = 1:num_cv_runs
         i_cv
         % Get the *original* run index (0 to 100) for the i_cv-th best run
@@ -195,6 +207,7 @@ for i_str = 1:num_targets
         end
     end
     % End loop over i_cv ranks
+    %}
     perm_partialR_gw_totalStr{i_str, 2} = perm_partialR_gw_total;
     perm_partialR_ww_totalStr{i_str, 2} = perm_partialR_ww_total;
 

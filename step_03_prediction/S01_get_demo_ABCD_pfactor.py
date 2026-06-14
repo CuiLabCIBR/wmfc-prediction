@@ -195,7 +195,7 @@ final_cols = [
     "General", "Ext", "ADHD", "Int",
     "meanFD_run1", "FD02ratio_run1", "QCvalid_run1",
     "meanFD_run2", "FD02ratio_run2", "QCvalid_run2",
-    "FDratio_lessthan_02" 
+    "FDratio_lessthan_02"]
 missing_final = [c for c in final_cols if c not in merged.columns]
 if missing_final:
     raise KeyError(f"Finally, export the missing columns: {missing_final}")

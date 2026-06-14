@@ -145,7 +145,7 @@ def main():
         print("[WARNING] No subjects met the criteria; no sublist txt file was generated.")
 
     print(f"[Completed] {filter_info}")
-    print(f"[Completed] Number of subjects satisfying "valid run >= 2 and each valid run has nFrames = 179 and keep = 1":{n_valid_subjects}")
+    print(f'[Completed] Number of subjects satisfying "valid run >= 2 and each valid run has nFrames = 179 and keep = 1": {n_valid_subjects}')
     print(f"[Completed] Number of qualified (subid, run) records:{len(pairs)}")
     print(f"[Output] Qualified run mapping:{PAIRS_OUT.resolve()}")
 

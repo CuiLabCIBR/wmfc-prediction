@@ -1,6 +1,6 @@
 # WhiteMatter_Function_Prediction
 
-Data and codes for our paper **"White-matter functional connectivity uniquely predicts brain maturation, cognition, and psychopathology beyond gray matter"**.
+Data and codes for our paper **"White-matter functional connectivity uniquely predicts brain age, cognition, and psychopathology beyond gray matter"**.
 
 ## Data Availability
 
@@ -15,9 +15,12 @@ The original data for these analyses are available via the following repositorie
 
 The system requirements and installation guide for each software can be found on its respective website.
 
-### Function & structural MRI processing
+### Functional and structural MRI processing
 * **fMRIPrep v24.0.0** ([https://fmriprep.org/en/24.0.0/](https://fmriprep.org/en/24.0.0/))
 * **XCP-D v0.7.1** ([https://xcp-d.readthedocs.io/en/0.7.1/](https://xcp-d.readthedocs.io/en/0.7.1/))
+* **HCP Pipelines** ([https://github.com/Washington-University/HCPpipelines](https://github.com/Washington-University/HCPpipelines)) for the alternative EFNY workflow
+* **Singularity/Apptainer** for running the fMRIPrep and XCP-D containers
+* **Slurm** for the provided batch-submission scripts
 * **OS:** Linux
 
 ### Postprocessing
@@ -29,31 +32,41 @@ The system requirements and installation guide for each software can be found on
 
 ## Data
 
-* **`demography`**: The demography folder contains the subject information used in this study.
-* **`Prediction`**: The Prediction folder contains the correlation (*r*) and partial correlation (partial *r*) values for the age, cognition, and psychopathology prediction analyses.
-* **`Atlas`**: The Atlas folder contains the parcellation files used in this study.
+* **`Data/demography/`**: Subject-level demographic, behavioral, and covariate tables used in the prediction analyses.
+* **`Data/Prediction/`**: Summary prediction results used for reporting and visualization.
+* **`Data/Atlas/`**: Parcellation images used to define the GM and WM regions.
 
-## Plot
+## `step_01_data_processing/`
 
-Scripts for:
-* Plotting group-level GM–GM, GM–WM, and WM–WM functional connectivity (FC) matrices.
-* Visualizing prediction accuracies for age, cognition, and psychopathology across datasets and FC types.
-* Visualizing network-level feature weights.
+Scripts for MRI preprocessing, nuisance-regressor preparation, and participant/run screening:
 
-## step_01_data_processing
+* `S01_fmriprep_*.sh`: Dataset-specific Slurm jobs for running fMRIPrep.
+* `S02_extract_confounds.py`: Extracts CSF and global-signal nuisance regressors from fMRIPrep confound tables.
+* `S02_extract_confounds_by_title_ABCD.m`: Constructs and extracts ABCD nuisance regressors, including motion, tissue, and global signals.
+* `S03_extract_columns_HCPD.m`: Standardizes and extracts the HCP-D nuisance-regressor columns required by XCP-D.
+* `S03_xcpd_*.sh`: Dataset-specific Slurm jobs for running XCP-D with nuisance regression, temporal filtering, despiking, and no spatial smoothing.
+* `S04_select_*`: Summarize framewise displacement and retain participants/runs satisfying the study's motion and time-point criteria.
 
-Scripts for data preprocessing and for screening participants based on head motion.
+### `step_01_data_processing/hcp_pipeline/`
 
-## step_02_calculate_FC
+Alternative EFNY preprocessing workflow based on the HCP Pipelines:
 
-Scripts for computing GM–GM, GM–WM, and WM–WM FC and constructing the corresponding prediction features.
+* `prepare_hcp_studyfolder_efny.py`: Converts EFNY BIDS inputs into the HCP-style StudyFolder layout using symbolic links.
+* `PreFreeSurferPipelineBatch.sh`, `FreeSurferPipelineBatch.sh`, `PostFreeSurferPipelineBatch.sh`, `GenericfMRIVolumeProcessingPipelineBatch.sh`, and `GenericfMRISurfaceProcessingPipelineBatch.sh`: Wrappers for the structural and functional HCP Pipeline stages.
+* `hcp_efny_env.sh` and `hcp_efny_batch_common.sh`: Shared environment configuration and stage helper functions.
+* `submit_hcp_efny_chain.sh` and `submit_hcp_efny_stage.slurm.sh`: Submit ordered HCP Pipeline stages as dependent Slurm jobs.
+
+## `step_02_calculate_FC/`
+
+Scripts for computing GM–GM, GM–WM, and WM–WM FC and constructing the corresponding prediction features:
 
 * `S01_segment_GM_WM.py`: Generates individual GM and WM tissue masks for each participant.
 * `S02_resample_atlas.sh`: Resamples GM and WM atlases into each dataset's functional space.
 * `S03_get_individualFCmatrix_*`: Extracts regional GM and WM time series and computes subject-level GM–GM, GM–WM, and WM–WM FC matrices.
+* `S03_sbatch_individual_FC_*.sh`: Dataset-specific Slurm submission scripts for subject-level FC calculation.
 * `S04_getZtrans_withTotalFC_*`: Applies Fisher z-transformation to FC values and concatenates them into participant-level prediction feature vectors.
 
-## step_03_prediction
+## `step_03_prediction/`
 
 Scripts for performing partial least squares regression (PLS-R) and calculating prediction performance (Pearson’s *r*, MAE) and partial correlations (partial *r*).
 
@@ -62,17 +75,36 @@ Scripts for performing partial least squares regression (PLS-R) and calculating 
 * `S02_Prediction_OverallPsyFactor_RandomCV_*`: Runs 5F-CV PLS-R prediction and permutation tests for age, cognition, and psychopathology using GM–GM, GM–WM, and WM–WM FC features, and saves prediction performance (Pearson’s *r*, MAE).
 * `S03_get_totalPartialCorr_*`: Computes partial correlations between observed and predicted scores across FC types.
 
-## step_04_get_significance
+### Validation and sensitivity analyses
+
+* `V_feature_merge/`: Tests whether concatenating two or three FC feature classes improves prediction.
+* `V_holdout/`: Runs half-sample holdout validation for age, cognition, and psychopathology. The ABCD analyses can use family-aware split definitions to prevent relatives from being divided across training and test samples.
+* `V_siblings/`: Repeats ABCD cognition and psychopathology prediction after selecting one participant per family.
+* `V_hcppipeline/`: Repeats EFNY age prediction using FC features generated from the alternative HCP Pipeline preprocessing workflow.
+
+Each validation directory contains its own prediction entry scripts and, where needed, a modified PLS-R implementation.
+
+## `step_04_get_significance/`
 
 Scripts for evaluating the statistical significance of prediction performance and partial *r* using permutation tests.
 
 * `S01_get_medianPartialCorr_perm_*`: Generates permutation-based null distributions of *r* and partial *r* across repetitions and FC types.
 * `S02_get_medianPartialCorr_sig_*`: Computes *p*-values and significance for *r* and partial *r* and summarizes the results for visualization.
 
-## step_05_feature_weights
+The `age`, `cognition`, and `pfactor` filename suffixes identify the prediction target analyzed by each script.
+
+## `step_05_feature_weights/`
 
 Scripts for computing and visualizing Haufe-transformed feature weights, assessing their network-level significance, and generating Figures 2C, 3C, and 4B.
 
-* `S01_getMedianWeight_*`: Computes median Haufe-transformed feature weights across CV repetitions for W–W, G–W, and G–G FC, separately for each prediction target and dataset, and generates the weight maps for Figures 3C and 4B.
-* `S02_datasetsAveraged_*`: Averages median Haufe feature weights across datasets within each FC type to obtain cross-dataset weight patterns, and visualizes these patterns for Figure 2C.
+* `S01a_getMedianWeight_ww_*`: Computes median Haufe-transformed WM–WM feature weights across CV repetitions.
+* `S01b_getMedianWeight_gw_*`: Computes median Haufe-transformed GM–WM feature weights across CV repetitions.
+* `S01c_getMedianWeight_gg_*`: Computes median Haufe-transformed GM–GM feature weights across CV repetitions.
+* `S02a_ww_datasetsAveraged_age.m`, `S02b_gw_datasetsAveraged_age.m`, and `S02c_gg_datasetsAveraged_age.m`: Average age-prediction Haufe weights across datasets for each FC class.
 * `S03_getSigNet_*`: Averages edge-wise Haufe weights into network-level scores and identifies significant network-level contributions.
+* `JHU68_info.mat`, `Schaefer100_info.mat`, `gm_labels.mat`, and `wm_labels.mat`: Atlas labels, network assignments, and ordering information used by the feature-weight scripts.
+* `cmap0.mat`: Diverging color map used for FC and feature-weight visualizations.
+
+## `plot/`
+
+Scripts for generating the main FC, prediction-performance, and feature-weight figures.

@@ -1,6 +1,6 @@
 # WhiteMatter_Function_Prediction
 
-Data and codes for our paper **"White-matter functional connectivity uniquely predicts brain age, cognition, and psychopathology beyond gray matter"**.
+Codes for our paper **"White-matter functional connectivity uniquely predicts brain age, cognition, and psychopathology beyond gray matter"**.
 
 ## Data Availability
 
@@ -29,11 +29,6 @@ The system requirements and installation guide for each software can be found on
 * **R v4.5.1** ([https://www.r-project.org](https://www.r-project.org))
 * **MATLAB R2019a** ([https://www.mathworks.com/](https://www.mathworks.com/))
 * **OS:** Linux
-
-## Data
-
-* **`Data/Prediction/`**: Summary prediction results used for reporting and visualization.
-* **`Data/Atlas/`**: Parcellation images used to define the GM and WM regions.
 
 ## `step_01_data_processing/`
 
